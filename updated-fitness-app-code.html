@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפליקציית כושר</title>
+    <style>
+        /* הסגנון נשאר ללא שינוי */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        .section {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #4CAF50;
+            background-color: #2a2a2a;
+            color: #fff;
+        }
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #chatMessages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #4CAF50;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .progress-chart {
+            width: 100%;
+            height: 300px;
+            background-color: #2a2a2a;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>אפליקציית כושר</h1>
+        
+        <div class="section" id="userProfile">
+            <h2>פרופיל לקוח</h2>
+            <input type="text" id="name" placeholder="שם">
+            <input type="number" id="age" placeholder="גיל">
+            <input type="number" id="weight" placeholder="משקל (ק״ג)">
+            <input type="number" id="height" placeholder="גובה (ס״מ)">
+            <input type="number" id="targetWeight" placeholder="משקל יעד (ק״ג)">
+            <select id="weightGoal">
+                <option value="maintain">לשמור על המשקל</option>
+                <option value="lose">לרדת במשקל</option>
+                <option value="gain">לעלות במשקל</option>
+            </select>
+            <select id="activityLevel">
+                <option value="sedentary">לא פעיל (עבודה משרדית)</option>
+                <option value="light">פעילות קלה (1-3 ימים בשבוע)</option>
+                <option value="moderate">פעילות בינונית (3-5 ימים בשבוע)</option>
+                <option value="high">פעילות גבוהה (6-7 ימים בשבוע)</option>
+                <option value="very_high">פעילות גבוהה מאוד (ספורטאי מקצועי)</option>
+            </select>
+            <button onclick="calculateCalories()">חשב קלוריות יומיות</button>
+            <p id="calorieResult"></p>
+        </div>
+        
+        <!-- שאר ה-HTML נשאר ללא שינוי -->
+        
+    </div>
+
+    <script>
+        function calculateCalories() {
+            console.log("calculateCalories function called");
+            try {
+                const weight = parseFloat(document.getElementById('weight').value);
+                const height = parseFloat(document.getElementById('height').value);
+                const age = parseFloat(document.getElementById('age').value);
+                const weightGoal = document.getElementById('weightGoal').value;
+                const activityLevel = document.getElementById('activityLevel').value;
+                
+                console.log("Weight:", weight, "Height:", height, "Age:", age);
+                
+                if (isNaN(weight) || isNaN(height) || isNaN(age)) {
+                    throw new Error('אנא הזן נתונים תקינים');
+                }
+                
+                // חישוב BMR בסיסי (נוסחת Harris-Benedict)
+                let bmr = 10 * weight + 6.25 * height - 5 * age + 5; // +5 for men, -161 for women
+                
+                // מקדמי פעילות
+                const activityFactors = {
+                    sedentary: 1.2,
+                    light: 1.375,
+                    moderate: 1.55,
+                    high: 1.725,
+                    very_high: 1.9
+                };
+                
+                // חישוב TDEE (Total Daily Energy Expenditure)
+                let tdee = bmr * activityFactors[activityLevel];
+                
+                // התאמה לפי מטרת המשקל
+                let calories;
+                switch (weightGoal) {
+                    case 'lose':
+                        calories = tdee - 500; // הפחתת 500 קלוריות ליום לירידה במשקל
+                        break;
+                    case 'gain':
+                        calories = tdee + 500; // הוספת 500 קלוריות ליום לעלייה במשקל
+                        break;
+                    default:
+                        calories = tdee;
+                }
+                
+                document.getElementById('calorieResult').textContent = `צריכת הקלוריות היומית המומלצת: ${Math.round(calories)} קלוריות`;
+            } catch (error) {
+                console.error("Error in calculateCalories:", error);
+                alert(error.message);
+            }
+        }
+
+        // שאר הפונקציות נשארות ללא שינוי
+
+    </script>
+</body>
+</html>
